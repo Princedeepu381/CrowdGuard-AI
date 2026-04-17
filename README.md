@@ -2,6 +2,8 @@
 
 **CrowdGuard-AI** is a premium, real-time IoT-driven crowd management and safety command center designed for large-scale sporting venues, stadiums, and event spaces.
 
+**🌐 Live Deployment:** [https://crowdguard-ai-362866275645.us-central1.run.app](https://crowdguard-ai-362866275645.us-central1.run.app)
+
 ![Live Demo Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
