@@ -33,7 +33,7 @@ export const subscribeToIncidents = (
 ): (() => void) => {
   try {
     const incidentsQuery = query(ref(db, INCIDENTS_REF), limitToLast(100));
-    const unsubscribe = onValue(incidentsQuery, (snapshot: DataSnapshot) => {
+    onValue(incidentsQuery, (snapshot: DataSnapshot) => {
       const data = snapshot.val();
       if (!data) { callback([]); return; }
       const events: IncidentEvent[] = Object.values(data) as IncidentEvent[];
