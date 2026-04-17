@@ -3,9 +3,9 @@ import { Terminal, AlertTriangle, Info, AlertOctagon } from 'lucide-react';
 import { IncidentEvent } from '../types';
 
 const SEV_STYLES = {
-  info:     { icon: Info,         cls: 'text-accent',   dot: 'bg-accent',    row: 'border-white/5'              },
-  warning:  { icon: AlertTriangle,cls: 'text-amber-400', dot: 'bg-amber-400', row: 'border-amber-500/15'         },
-  critical: { icon: AlertOctagon, cls: 'text-red-400',   dot: 'bg-red-500',   row: 'border-red-500/20 bg-red-500/4' },
+  info:     { icon: Info,          cls: 'text-accent',    dot: 'bg-accent',    row: 'border-white/5',              label: 'Information' },
+  warning:  { icon: AlertTriangle, cls: 'text-amber-400', dot: 'bg-amber-400', row: 'border-amber-500/15',         label: 'Warning'     },
+  critical: { icon: AlertOctagon,  cls: 'text-red-400',   dot: 'bg-red-500',   row: 'border-red-500/20 bg-red-500/4', label: 'Critical'  },
 };
 
 export const IncidentLog: React.FC<{ events: IncidentEvent[] }> = ({ events }) => {
@@ -18,31 +18,43 @@ export const IncidentLog: React.FC<{ events: IncidentEvent[] }> = ({ events }) =
   }, [events]);
 
   return (
-    <div className="glass-card hud-border flex flex-col p-5 h-full min-h-[340px]">
+    <section
+      className="glass-card hud-border flex flex-col p-5 h-full min-h-[340px]"
+      aria-labelledby="incident-log-heading"
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="section-label mb-1">Live Feed</p>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/30">
-              <Terminal className="w-4 h-4 text-accent" />
+          <p className="section-label mb-1" aria-hidden="true">Live Feed</p>
+          <h2
+            id="incident-log-heading"
+            className="text-lg font-bold text-white flex items-center gap-2.5"
+          >
+            <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/30" aria-hidden="true">
+              <Terminal className="w-4 h-4 text-accent" aria-hidden="true" />
             </div>
             Incident Log
           </h2>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" aria-hidden="true">
           <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
           <span className="text-[10px] text-gray-500 mono uppercase tracking-wider">Live</span>
         </div>
       </div>
 
-      {/* Events */}
+      {/* Events list — aria-live so screen readers announce new incidents */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto space-y-1.5 pr-1"
+        role="log"
+        aria-live="polite"
+        aria-atomic="false"
+        aria-label="Live incident event log"
+        aria-relevant="additions"
+        tabIndex={0}
       >
         {events.length === 0 && (
-          <div className="h-full flex items-center justify-center text-gray-600 text-sm">
+          <div className="h-full flex items-center justify-center text-gray-600 text-sm" role="status">
             No incidents logged yet…
           </div>
         )}
@@ -53,15 +65,17 @@ export const IncidentLog: React.FC<{ events: IncidentEvent[] }> = ({ events }) =
             <div
               key={event.id}
               className={`incident-row flex gap-3 items-start px-3 py-2.5 rounded-xl border ${sev.row} transition-all`}
+              role="listitem"
+              aria-label={`${sev.label} at ${event.timestamp}: ${event.message}`}
             >
-              {/* Severity dot */}
-              <div className="flex flex-col items-center gap-1 pt-0.5 flex-shrink-0">
+              {/* Severity indicator */}
+              <div className="flex flex-col items-center gap-1 pt-0.5 flex-shrink-0" aria-hidden="true">
                 <div className={`w-1.5 h-1.5 rounded-full ${sev.dot} ${event.severity === 'critical' ? 'animate-pulse' : ''}`} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <Icon className={`w-3 h-3 ${sev.cls} flex-shrink-0`} />
-                  <span className="mono text-[10px] text-gray-600">{event.timestamp}</span>
+                  <Icon className={`w-3 h-3 ${sev.cls} flex-shrink-0`} aria-hidden="true" />
+                  <time className="mono text-[10px] text-gray-600" dateTime={event.timestamp}>{event.timestamp}</time>
                 </div>
                 <p className="text-xs text-gray-300 leading-snug">{event.message}</p>
               </div>
@@ -69,6 +83,6 @@ export const IncidentLog: React.FC<{ events: IncidentEvent[] }> = ({ events }) =
           );
         })}
       </div>
-    </div>
+    </section>
   );
 };
