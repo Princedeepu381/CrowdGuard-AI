@@ -2,6 +2,7 @@
 // Uses Firebase Realtime Database to persist incident logs in real-time
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getDatabase, Database } from 'firebase/database';
+import { getAnalytics, Analytics, isSupported } from 'firebase/analytics';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDemoKeyForCrowdGuardAI00000000000",
@@ -22,4 +23,14 @@ if (getApps().length === 0) {
 }
 
 export const db: Database = getDatabase(app);
+
+// Initialize Analytics conditionally (may not be supported in some environments/extensions)
+let analytics: Analytics | null = null;
+isSupported().then(supported => {
+  if (supported) {
+    analytics = getAnalytics(app);
+  }
+});
+
+export { analytics };
 export default app;

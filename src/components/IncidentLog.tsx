@@ -1,88 +1,68 @@
-import React, { useEffect, useRef } from 'react';
-import { Terminal, AlertTriangle, Info, AlertOctagon } from 'lucide-react';
+import React from 'react';
+import { Terminal, Info, AlertTriangle, AlertOctagon, History } from 'lucide-react';
 import { IncidentEvent } from '../types';
 
 const SEV_STYLES = {
-  info:     { icon: Info,          cls: 'text-accent',    dot: 'bg-accent',    row: 'border-white/5',              label: 'Information' },
-  warning:  { icon: AlertTriangle, cls: 'text-amber-400', dot: 'bg-amber-400', row: 'border-amber-500/15',         label: 'Warning'     },
-  critical: { icon: AlertOctagon,  cls: 'text-red-400',   dot: 'bg-red-500',   row: 'border-red-500/20 bg-red-500/4', label: 'Critical'  },
+  info:     { icon: Info,          cls: 'text-blue-500',    bg: 'bg-blue-50',    border: 'border-blue-100',  label: 'Info' },
+  warning:  { icon: AlertTriangle, cls: 'text-amber-500',   bg: 'bg-amber-50',   border: 'border-amber-100', label: 'Warning' },
+  critical: { icon: AlertOctagon,  cls: 'text-red-500',    bg: 'bg-red-50',    border: 'border-red-100',   label: 'Critical' },
 };
 
 export const IncidentLog: React.FC<{ events: IncidentEvent[] }> = ({ events }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [events]);
-
   return (
-    <section
-      className="glass-card hud-border flex flex-col p-5 h-full min-h-[340px]"
+    <div 
+      className="glass-card flex flex-col p-8 h-full bg-white border border-gray-100 shadow-sm overflow-hidden"
+      role="region"
       aria-labelledby="incident-log-heading"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <p className="section-label mb-1" aria-hidden="true">Live Feed</p>
-          <h2
-            id="incident-log-heading"
-            className="text-lg font-bold text-white flex items-center gap-2.5"
-          >
-            <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/30" aria-hidden="true">
-              <Terminal className="w-4 h-4 text-accent" aria-hidden="true" />
-            </div>
-            Incident Log
+      <div className="flex items-center justify-between mb-6">
+        <div className="space-y-1">
+          <p className="section-label mb-0" aria-hidden="true">System History</p>
+          <h2 id="incident-log-heading" className="text-xl font-medium tracking-tight text-gray-900 flex items-center gap-3">
+             <Terminal className="w-6 h-6 text-gray-700" />
+             Incident Log
           </h2>
         </div>
-        <div className="flex items-center gap-2" aria-hidden="true">
-          <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-          <span className="text-[10px] text-gray-500 mono uppercase tracking-wider">Live</span>
+        <div className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 shadow-sm text-[11px] font-bold text-gray-500 mono uppercase tracking-wider">
+          <History className="w-3 h-3" />
+          <span>Real-time</span>
         </div>
       </div>
 
-      {/* Events list — aria-live so screen readers announce new incidents */}
-      <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto space-y-1.5 pr-1"
+      <div 
+        className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar"
         role="log"
         aria-live="polite"
-        aria-atomic="false"
-        aria-label="Live incident event log"
         aria-relevant="additions"
-        tabIndex={0}
       >
-        {events.length === 0 && (
-          <div className="h-full flex items-center justify-center text-gray-600 text-sm" role="status">
-            No incidents logged yet…
+        {events.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-gray-300 gap-2 opacity-60">
+            <Info className="w-10 h-10" />
+            <p className="text-xs font-medium uppercase tracking-widest">No recent incidents</p>
           </div>
-        )}
-        {events.map(event => {
-          const sev = SEV_STYLES[event.severity];
-          const Icon = sev.icon;
-          return (
-            <div
-              key={event.id}
-              className={`incident-row flex gap-3 items-start px-3 py-2.5 rounded-xl border ${sev.row} transition-all`}
-              role="listitem"
-              aria-label={`${sev.label} at ${event.timestamp}: ${event.message}`}
-            >
-              {/* Severity indicator */}
-              <div className="flex flex-col items-center gap-1 pt-0.5 flex-shrink-0" aria-hidden="true">
-                <div className={`w-1.5 h-1.5 rounded-full ${sev.dot} ${event.severity === 'critical' ? 'animate-pulse' : ''}`} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <Icon className={`w-3 h-3 ${sev.cls} flex-shrink-0`} aria-hidden="true" />
-                  <time className="mono text-[10px] text-gray-600" dateTime={event.timestamp}>{event.timestamp}</time>
+        ) : (
+          [...events].reverse().map((event) => {
+            const style = SEV_STYLES[event.severity] || SEV_STYLES.info;
+            return (
+              <div
+                key={event.id}
+                className={`p-4 rounded-2xl border ${style.bg} ${style.border} transition-all duration-300 hover:shadow-md hover:translate-x-1`}
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <style.icon className={`w-3.5 h-3.5 ${style.cls}`} />
+                    <span className={`text-[10px] font-bold uppercase tracking-widest ${style.cls}`}>
+                      {style.label}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-gray-400 font-bold uppercase tracking-widest">{event.timestamp}</span>
                 </div>
-                <p className="text-xs text-gray-300 leading-snug">{event.message}</p>
+                <p className="text-sm text-gray-700 leading-relaxed font-medium">{event.message}</p>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
-    </section>
+    </div>
   );
 };

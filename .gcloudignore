@@ -1,0 +1,7 @@
+.gcloudignore
+.git
+.gitignore
+node_modules/
+dist/
+dist-test/
+# We EXPLICITLY do not ignore .env here so it is uploaded for the build process

@@ -17,5 +17,6 @@ module.exports = {
     'src/lib/**/*.ts',
     '!src/lib/firebase.ts',
     '!src/lib/firebaseService.ts',
+    '!src/lib/geminiService.ts',
   ],
 };

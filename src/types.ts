@@ -23,3 +23,8 @@ export interface IncidentEvent {
   message: string;
   severity: 'info' | 'warning' | 'critical';
 }
+
+export interface TelemetryHistoryNode {
+  time: string;
+  [key: string]: string | number;
+}

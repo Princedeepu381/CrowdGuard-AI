@@ -3,29 +3,33 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell, CartesianGrid
 } from 'recharts';
-import { BarChart2 } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { ZoneTelemetry } from '../types';
+import { GeminiInsight } from './GeminiInsight';
 
-const ZONE_COLORS = [
-  '#00D4FF','#a78bfa','#34d399','#fbbf24','#f472b6','#60a5fa','#fb923c','#4ade80'
+const GOOGLE_COLORS = [
+  '#4285F4', '#34A853', '#FBBC05', '#EA4335', '#673AB7', '#009688', '#FF5722', '#607D8B'
 ];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#0d1323] border border-white/10 rounded-xl p-3 shadow-2xl text-xs space-y-1.5 max-w-[180px]">
-      <p className="text-gray-400 mono mb-2">{label}</p>
+    <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-xl text-xs space-y-2">
+      <p className="font-bold text-gray-900 mb-1">{label}</p>
       {payload.map((p: any) => (
-        <div key={p.dataKey} className="flex justify-between gap-3">
-          <span style={{ color: p.color }}>{p.dataKey.replace('_', ' ')}</span>
-          <span className="font-bold text-white mono">{p.value}%</span>
+        <div key={p.dataKey} className="flex justify-between gap-6 items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+            <span className="text-gray-500 font-medium">{p.dataKey.replace('_', ' ')}</span>
+          </div>
+          <span className="text-gray-900 font-bold">{p.value}%</span>
         </div>
       ))}
     </div>
   );
 };
 
-export const AnalyticsPanel: React.FC<{ telemetry: ZoneTelemetry[], history: any[] }> = ({ telemetry, history }) => {
+export const AnalyticsPanel = React.memo(({ telemetry, history }: { telemetry: ZoneTelemetry[], history: any[] }) => {
   const totalCapacity = useMemo(() => Math.round(
     telemetry.reduce((acc, z) => acc + z.density, 0) / telemetry.length
   ), [telemetry]);
@@ -34,97 +38,88 @@ export const AnalyticsPanel: React.FC<{ telemetry: ZoneTelemetry[], history: any
   const clearExits = telemetry.filter(z => z.id.startsWith('Exit_') && z.density < 60 && !z.hazard).length;
 
   const metrics = [
-    { label: 'Venue Capacity', value: `${totalCapacity}%`, color: totalCapacity > 75 ? 'text-red-400' : 'text-accent', sub: 'avg across all zones' },
-    { label: 'Unsafe Zones',   value: unsafeZones,          color: unsafeZones > 0 ? 'text-red-400' : 'text-emerald-400', sub: 'density > 80% or hazard' },
-    { label: 'Clear Exits',    value: clearExits,            color: 'text-emerald-400', sub: 'open & safe' },
+    { label: 'Avg Density', value: `${totalCapacity}%`, color: totalCapacity > 75 ? 'text-red-500' : 'text-blue-600', sub: 'overall load' },
+    { label: 'Hazard Count',   value: unsafeZones,          color: unsafeZones > 0 ? 'text-red-500' : 'text-green-600', sub: 'critical sectors' },
+    { label: 'Safe Exits',     value: clearExits,            color: 'text-blue-500', sub: 'operational' },
   ];
 
   return (
-    <div className="glass-card hud-border p-6 flex flex-col gap-6">
-      {/* Header */}
+    <div className="glass-card p-8 flex flex-col gap-8 bg-white border border-gray-100">
       <div>
-        <p className="section-label mb-1">Analytics</p>
-        <h2 className="text-lg font-bold text-white flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/30">
-            <BarChart2 className="w-4 h-4 text-accent" />
-          </div>
-          Crowd Analytics
+        <p className="section-label mb-1">Advanced Telemetry</p>
+        <h2 className="text-xl font-medium tracking-tight text-gray-900 flex items-center gap-3">
+          <Activity className="w-6 h-6 text-blue-500" />
+          Real-time Analytics
         </h2>
       </div>
 
-      {/* Metric cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <GeminiInsight telemetry={telemetry} />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {metrics.map(m => (
-          <div key={m.label} className="bg-white/3 border border-white/6 rounded-xl p-4 text-center">
-            <p className="section-label mb-1.5">{m.label}</p>
-            <p className={`text-3xl font-black mono ${m.color}`}>{m.value}</p>
-            <p className="text-[10px] text-gray-600 mt-1">{m.sub}</p>
+          <div key={m.label} className="bg-gray-50/50 border border-gray-100 rounded-2xl p-5 hover:bg-white hover:shadow-lg hover:border-blue-100 transition-all duration-300">
+            <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-2">{m.label}</p>
+            <p className={`text-4xl font-light tracking-tighter ${m.color}`}>{m.value}</p>
+            <p className="text-[10px] text-gray-400 font-medium mt-2">{m.sub}</p>
           </div>
         ))}
       </div>
 
-      {/* Line chart */}
-      <div>
-        <p className="section-label mb-3">Density over time (last 30s)</p>
-        <div className="h-40">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={history}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-              <XAxis dataKey="time" hide />
-              <YAxis domain={[0, 100]} hide />
-              <Tooltip content={<CustomTooltip />} />
-              {telemetry.map((zone, i) => (
-                <Line
-                  key={zone.id}
-                  type="monotone"
-                  dataKey={zone.id}
-                  stroke={ZONE_COLORS[i % ZONE_COLORS.length]}
-                  strokeWidth={1.5}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        {/* Legend */}
-        <div className="flex flex-wrap gap-3 mt-3">
-          {telemetry.map((z, i) => (
-            <span key={z.id} className="flex items-center gap-1.5 text-[10px] text-gray-400">
-              <span className="w-3 h-1.5 rounded-full inline-block" style={{ backgroundColor: ZONE_COLORS[i % ZONE_COLORS.length] }} />
-              {z.name}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Bar chart */}
-      <div>
-        <p className="section-label mb-3">Current Density Comparison</p>
-        <div className="h-40">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={telemetry} margin={{ top: 4, right: 4, left: -20, bottom: 4 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-              <XAxis
-                dataKey="name"
-                tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: 'Inter' }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 8 }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
-              <Bar dataKey="density" radius={[5, 5, 0, 0]}>
-                {telemetry.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.hazard || entry.density > 80 ? '#ef4444' : entry.density > 60 ? '#f59e0b' : '#34d399'}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+        {/* Line chart */}
+        <div className="space-y-4">
+          <p className="section-label mb-0">Trend (30s Window)</p>
+          <div className="h-48 border border-gray-50 rounded-2xl p-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={history}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <XAxis dataKey="time" hide />
+                <YAxis domain={[0, 100]} hide />
+                <Tooltip content={<CustomTooltip />} />
+                {telemetry.map((zone, i) => (
+                  <Line
+                    key={zone.id}
+                    type="monotone"
+                    dataKey={zone.id}
+                    stroke={GOOGLE_COLORS[i % GOOGLE_COLORS.length]}
+                    strokeWidth={2}
+                    dot={false}
+                    isAnimationActive={false}
                   />
                 ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Bar chart */}
+        <div className="space-y-4">
+          <p className="section-label mb-0">Sector Intensity</p>
+          <div className="h-48 border border-gray-50 rounded-2xl p-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={telemetry} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: '#9aa0a6', fontSize: 9 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis domain={[0, 100]} hide />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8f9fa' }} />
+                <Bar dataKey="density" radius={[4, 4, 0, 0]}>
+                  {telemetry.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.hazard || entry.density > 80 ? '#EA4335' : entry.density > 60 ? '#FBBC05' : '#4285F4'}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>
   );
-};
+});

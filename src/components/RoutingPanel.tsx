@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Target, ShieldCheck, ShieldAlert, ArrowRight, Zap, Navigation } from 'lucide-react';
+import { MapPin, ArrowRight, Zap, Navigation, ChevronDown } from 'lucide-react';
 import { ZoneTelemetry, RouteResponse } from '../types';
 import { getSafeRoute } from '../lib/routingEngine';
 
@@ -17,127 +17,94 @@ export const RoutingPanel: React.FC<{ telemetry: ZoneTelemetry[] }> = ({ telemet
       const result = getSafeRoute(start, dest, telemetry);
       setRouteData(result);
       setComputing(false);
-    }, 700);
+    }, 800);
   };
 
   const isUnsafe = (routeData?.time_saved_minutes ?? 0) > 0;
 
   return (
-    <div className="glass-card hud-border flex flex-col gap-5 p-6 h-full">
+    <div className="glass-card p-8 flex flex-col gap-6 bg-white border border-gray-100 shadow-sm relative overflow-hidden">
       {/* Header */}
-      <div>
-        <p className="section-label mb-1">Routing Engine</p>
-        <h2 className="text-lg font-bold text-white flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/30">
-            <Navigation className="w-4 h-4 text-accent" />
-          </div>
-          AI Safety Routing
+      <div className="space-y-1">
+        <p className="section-label mb-0" aria-hidden="true">Travel Optimizer</p>
+        <h2 className="text-xl font-medium tracking-tight text-gray-900 flex items-center gap-3">
+          <Navigation className="w-6 h-6 text-blue-500" />
+          Safety Routing
         </h2>
       </div>
 
-      {/* Inputs */}
-      <div className="space-y-3">
-        <div>
-          <label className="section-label block mb-1.5">Origin Zone</label>
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+      {/* Selects */}
+      <div className="space-y-4 relative z-10">
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Origin</label>
+          <div className="relative group">
             <select
-              id="routing-origin"
-              className="w-full border border-white/10 text-white text-sm rounded-xl pl-9 pr-3 py-2.5 outline-none transition-colors appearance-none cursor-pointer"
-              style={{ backgroundColor: '#0d1525', color: 'white', colorScheme: 'dark' }}
+              className="w-full bg-gray-50 border border-gray-100 text-gray-800 rounded-2xl p-4 outline-none appearance-none cursor-pointer focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50/50 transition-all text-sm font-medium"
               value={start}
               onChange={(e) => setStart(e.target.value)}
             >
-              <option value="" style={{ backgroundColor: '#0d1525', color: '#9ca3af' }}>Select origin…</option>
+              <option value="">Choose origin sector…</option>
               {telemetry.map(z => (
-                <option key={z.id} value={z.id} style={{ backgroundColor: '#0d1525', color: 'white' }}>
-                  {z.name} — {z.density}%
-                </option>
+                <option key={z.id} value={z.id}>{z.name}</option>
               ))}
             </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-focus-within:text-blue-500" />
           </div>
         </div>
 
-        <div className="flex justify-center">
-          <div className="w-px h-4 bg-white/10" />
-        </div>
-
-        <div>
-          <label className="section-label block mb-1.5">Destination</label>
-          <div className="relative">
-            <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Destination</label>
+          <div className="relative group">
             <select
-              id="routing-destination"
-              className="w-full border border-white/10 text-white text-sm rounded-xl pl-9 pr-3 py-2.5 outline-none transition-colors appearance-none cursor-pointer"
-              style={{ backgroundColor: '#0d1525', color: 'white', colorScheme: 'dark' }}
+              className="w-full bg-gray-50 border border-gray-100 text-gray-800 rounded-2xl p-4 outline-none appearance-none cursor-pointer focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50/50 transition-all text-sm font-medium"
               value={dest}
               onChange={(e) => setDest(e.target.value)}
             >
-              <option value="" style={{ backgroundColor: '#0d1525', color: '#9ca3af' }}>Select destination…</option>
+              <option value="">Choose destination…</option>
               {telemetry.map(z => (
-                <option key={z.id} value={z.id} style={{ backgroundColor: '#0d1525', color: 'white' }}>
-                  {z.name} — {z.density}%
-                </option>
+                <option key={z.id} value={z.id}>{z.name}</option>
               ))}
             </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-focus-within:text-blue-500" />
           </div>
         </div>
 
         <button
-          id="get-safe-route-btn"
           onClick={handleRoute}
           disabled={!start || !dest || computing}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm tracking-wide transition-all duration-200 bg-accent text-black hover:bg-cyan-300 disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{ boxShadow: '0 0 24px rgba(0,212,255,0.35)' }}
+          className="w-full mt-2 flex items-center justify-center gap-2 py-4 bg-blue-600 text-white rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-blue-700 hover:shadow-lg focus:ring-4 focus:ring-blue-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
         >
-          {computing ? (
-            <>
-              <div className="w-4 h-4 border-2 border-black/40 border-t-black rounded-full animate-spin" />
-              Computing Route…
-            </>
-          ) : (
-            <>
-              <Zap className="w-4 h-4" />
-              Get Safe Route
-            </>
-          )}
+          {computing ? <Zap className="w-4 h-4 animate-spin" /> : <MapPin className="w-4 h-4" />}
+          {computing ? 'Calculating Path...' : 'Get Safe Route'}
         </button>
       </div>
 
-      {/* Result */}
       {routeData && (
-        <div className="animate-fade-slide-up space-y-3">
-          {/* Threat box */}
-          <div className={`rounded-xl p-4 border ${isUnsafe ? 'bg-red-500/8 border-red-500/25' : 'bg-emerald-500/8 border-emerald-500/25'}`}>
+        <div className="animate-slide-up space-y-4 pt-4 border-t border-gray-50">
+          <div className={`rounded-3xl p-5 border ${isUnsafe ? 'bg-red-50 border-red-100 text-red-800' : 'bg-green-50 border-green-100 text-green-800'}`}>
             <div className="flex items-center gap-2 mb-2">
-              {isUnsafe
-                ? <ShieldAlert className="w-4 h-4 text-red-400 flex-shrink-0" />
-                : <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />}
-              <span className={`text-xs font-bold tracking-wider ${isUnsafe ? 'text-red-400' : 'text-emerald-400'}`}>
-                {isUnsafe ? 'THREAT DETECTED' : 'PATH CLEAR'}
+              <span className="text-[10px] font-black uppercase tracking-widest opacity-60">
+                {isUnsafe ? '⚠️ Alert Found' : '✅ Route Scanned'}
               </span>
             </div>
-            <p className="text-xs text-gray-300 leading-relaxed mb-1">{routeData.threat_analysis}</p>
-            <p className="text-xs font-semibold text-white">{routeData.action_directive}</p>
+            <p className="text-sm font-medium leading-relaxed">{routeData.threat_analysis}</p>
           </div>
 
-          {/* Route path */}
-          <div className="bg-white/3 rounded-xl p-4 border border-white/6">
-            <p className="section-label mb-3">Safe Route</p>
+          <div className="bg-gray-50/50 rounded-3xl p-5 border border-gray-100">
+            <p className="section-label mb-3">Proposed Vector</p>
             <div className="flex flex-wrap items-center gap-2">
               {routeData.safe_route.map((step, idx) => (
                 <React.Fragment key={idx}>
-                  <span className="px-3 py-1 rounded-lg bg-white/8 text-xs font-semibold text-white border border-white/10">{step}</span>
+                  <span className="px-3 py-1.5 bg-white border border-gray-100 text-gray-700 rounded-lg text-xs font-bold uppercase tracking-tight shadow-sm">{step}</span>
                   {idx < routeData.safe_route.length - 1 && (
-                    <ArrowRight className="w-3 h-3 text-gray-600 flex-shrink-0" />
+                    <ArrowRight className="w-3 h-3 text-blue-400 flex-shrink-0" />
                   )}
                 </React.Fragment>
               ))}
             </div>
             {routeData.time_saved_minutes > 0 && (
-              <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/25 text-amber-400 text-xs font-bold">
-                <Zap className="w-3 h-3" />
-                Reroute saves ~{routeData.time_saved_minutes} min
+              <div className="mt-5 text-blue-600 text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 w-fit">
+                <Zap className="w-3 h-3" /> Efficiency Gain: ~{routeData.time_saved_minutes} MIN
               </div>
             )}
           </div>
