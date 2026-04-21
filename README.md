@@ -1,6 +1,6 @@
-# 🛡️ CrowdGuard-AI (ICC Edition)
+# 🛡️ CrowdGuard-AI 
 
-**CrowdGuard-AI** is a premium, real-time safety command center designed for large-scale sporting venues, stadiums, and event spaces. This version features a high-end "ICC Style" landing page aesthetic, prioritising visual excellence and critical safety telemetry.
+**CrowdGuard-AI** is a premium, real-time safety command center designed for large-scale sporting venues, stadiums, and event spaces. This version features a high-end  landing page aesthetic, prioritising visual excellence and critical safety telemetry.
 
 **🌐 Live Deployment:** [https://crowdguard-ai-362866275645.us-central1.run.app](https://crowdguard-ai-362866275645.us-central1.run.app)
 
