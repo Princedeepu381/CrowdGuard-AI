@@ -1,33 +1,35 @@
-# 🛡️ CrowdGuard-AI 
+# 🛡️ CrowdGuard-AI: Aegis One Edition
 
-**CrowdGuard-AI** is a premium, real-time safety command center designed for large-scale sporting venues, stadiums, and event spaces. This version features a high-end  landing page aesthetic, prioritising visual excellence and critical safety telemetry.
+**CrowdGuard-AI** is a high-fidelity, real-time safety command center designed for large-scale sporting venues, stadiums, and global event spaces. This version features the **Aegis One** design system—a cinematic, cosmic-themed interface that prioritizes visual excellence and mission-critical safety telemetry.
 
 **🌐 Live Deployment:** [https://crowdguard-ai-362866275645.us-central1.run.app](https://crowdguard-ai-362866275645.us-central1.run.app)
 
-![Live Demo Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)
+![Status: Live](https://img.shields.io/badge/Status-Live-00F0FF?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
 
 ---
 
-## 🌟 Chosen Vertical
+## 🌌 The Aegis One Overhaul
 
-**Smart Venue Safety & Crowd Management**
+The platform has undergone a complete visual transformation to match the "Aegis One" aesthetic, shifting from a standard dashboard to an immersive, dark-mode "Mission Control" environment.
 
-CrowdGuard-AI addresses the critical challenge of managing crowd density in high-stakes environments. By combining real-time telemetry with AI-driven insights, the platform enables venue operators to make split-second decisions that ensure fan safety during capacity events.
+- **🎨 Cosmic Design System**: A deep-navy core (`#0A0F1A`) paired with neon cyan and purple accents, featuring a dynamic starry parallax background.
+- **💎 Premium Glassmorphism**: High-fidelity `backdrop-blur` components and semi-transparent layers for maximum depth.
+- **🔡 Sora Typography**: Optimized for high-speed data readability and a clean, tech-forward aesthetic.
 
 ---
 
 ## ✨ Key Features
 
-- **🏆 ICC-Style Premium UI**: A complete visual overhaul inspired by modern high-end sports platforms, featuring glassmorphism, fluid animations (Outfit typography), and a scrolling single-page layout.
-- **🤖 Gemini AI Smart Fallback**: An intelligent analysis engine that tries the Google Gemini API first but falls back to a sophisticated local tactical engine. It generates 100% realistic, data-driven security reports based on live venue state.
-- **📍 High-Contrast Circular Map**: A realistic stadium schematic (SVG-based) that provides instant visual feedback on sector density and active hazard statuses.
-- **📈 Real-Time Monitoring**: Live-updating metrics for average density, hazard counts, and active safety protocols, all synced via **Firebase Realtime Database**.
-- **🚦 Tactical Overrides**: A built-in Admin Suite to simulate emergency scenarios, trigger hazards, and test site-wide safety responses in real-time.
-- **📱 Fully Responsive**: Optimized for command center displays and mobile tablets for on-ground security personnel.
+- **🏆 Tactical Command Center**: A unified interface for monitoring real-time density across all stadium sectors.
+- **🤖 Gemini AI Analysis**: Integrated **Google Gemini 1.5 Pro** providing real-time tactical insights. Features an intelligent fallback system that ensures 100% operational uptime for security reports.
+- **📍 Tactical Stadium View**: A realistic, dark-themed SVG schematic providing instant visual feedback on sector density and hazard indicators.
+- **📊 Advanced Analytics**: New real-time trend tracking with a 30-second sliding window, monitoring historical density and sector intensity.
+- **🚦 Manual Overrides**: Built-in Admin Suite for stress-testing evacuation routes and simulating emergency scenarios.
+- **⚡ Real-Time Sync**: Powered by **Firebase Realtime Database** for millisecond-latency telemetry updates.
 
 ---
 
@@ -36,10 +38,10 @@ CrowdGuard-AI addresses the critical challenge of managing crowd density in high
 | Layer | Technology |
 |---|---|
 | **Frontend** | React 18 + TypeScript + Vite |
-| **Styling** | Vanilla CSS (ICC Glassmorphism) + Tailwind Utilities |
+| **Styling** | Vanilla CSS (Aegis One Tokens) + Tailwind CSS |
 | **Backend/DB** | Firebase Realtime Database |
-| **AI/ML** | Google Gemini 1.5 (Pro/Flash) with Tactical Fallback |
-| **Icons** | Lucide-React |
+| **AI Core** | Google Gemini 1.5 (Pro/Flash) |
+| **Analytics** | Recharts (Tactical Mode) |
 | **Deployment**| Google Cloud Run |
 
 ---
@@ -53,35 +55,34 @@ cd CrowdGuard-AI
 npm install
 ```
 
-### 2. Environment Variables
-Create a `.env` file in the root based on the provided keys (VITE_ prefixed):
-- `VITE_FIREBASE_API_KEY`
-- `VITE_GEMINI_API_KEY` (Optional for AI fallback)
+### 2. Environment Setup
+Create a `.env` file in the root with your credentials:
+```env
+VITE_FIREBASE_API_KEY=your_key
+VITE_GEMINI_API_KEY=your_key
+```
 
-### 3. Run Locally
+### 3. Launch
 ```bash
 npm run dev
 ```
-The app will be available at `http://localhost:5173`.
 
 ---
 
-## 📐 AI Intelligence & Logic
+## 🎨 Design Philosophy
 
-### Tactical Fallback System
-The system is designed for **100% uptime**. If the Gemini API is blocked or the key is missing, the AI Core switches to a local deterministic model that:
-1. Analyzes all 8 telemetry nodes.
-2. Identifies the "hottest" and "safest" zones.
-3. Generates a context-aware 2-sentence tactical recommendation (e.g., *"⚠️ CRITICAL: Elevated density in Zone Alpha. Redirect egress flow via Zone Delta corridor immediately."*)
+CrowdGuard-AI isn't just a tool; it's a statement. By combining the high-stakes world of AI safety with cinematic design, we transform reactive security into a proactive, high-speed tactical experience.
+
+- **Clarity under Pressure**: High-contrast indicators ensure critical data is readable in seconds.
+- **Visual Excellence**: Every pixel is crafted to provide a premium, state-of-the-art feel for professional venue operators.
 
 ---
 
-## ♿ Accessibility
+## ♿ Accessibility & Safety
 
-CrowdGuard-AI is built with safety in mind for all users:
-- **ARIA Landmark Roles**: Proper structural markup for screen readers.
-- **Visible Focus States**: High-contrast outlines for keyboard navigation.
-- **Live Regions**: Assertive announcements for hazard activation.
+- **ARIA Landmark Roles**: Full screen-reader support for critical hazard alerts.
+- **Visible Focus States**: Optimized for keyboard navigation in high-pressure environments.
+- **Live Regions**: Assertive announcements for hazard activation and deactivation.
 
 ---
 
