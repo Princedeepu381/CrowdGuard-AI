@@ -41,17 +41,17 @@ export const GeminiInsight: React.FC<{ telemetry: ZoneTelemetry[] }> = ({ teleme
   }, [telemetry]);
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-blue-50/60 via-white to-indigo-50/50 p-8 group">
+    <div className="relative overflow-hidden rounded-[2.5rem] border border-primary/20 bg-white/[0.02] p-10 group transition-all hover:bg-white/[0.04]">
       {/* Background Decoration */}
-      <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 blur-[60px] rounded-full group-hover:bg-primary/10 transition-all duration-700" />
-      <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/5 blur-[60px] rounded-full" />
+      <div className="absolute -top-16 -right-16 w-64 h-64 bg-primary/10 blur-[100px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
+      <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-secondary/10 blur-[100px] rounded-full" />
 
       {/* Header Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 relative z-10">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10 relative z-10">
+        <div className="flex items-center gap-6">
           <div className="relative">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-primary/20">
-              <Brain className="w-6 h-6" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-background shadow-[0_0_20px_rgba(0,240,255,0.3)] group-hover:scale-110 transition-transform">
+              <Brain className="w-8 h-8" />
             </div>
             {/* Pulse ring when loading */}
             {status === 'loading' && (
@@ -59,12 +59,12 @@ export const GeminiInsight: React.FC<{ telemetry: ZoneTelemetry[] }> = ({ teleme
             )}
           </div>
           <div>
-            <h3 className="text-base font-black text-gray-900 flex items-center gap-2">
+            <h3 className="text-xl font-bold flex items-center gap-2">
               Gemini AI Analysis
-              <Sparkles className="w-4 h-4 text-primary" />
+              <Sparkles className="w-5 h-5 text-primary" />
             </h3>
-            <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest ${statusColor}`}>
-              <StatusIcon className="w-3 h-3" />
+            <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] ${statusColor}`}>
+              <StatusIcon className="w-4 h-4" />
               {statusLabel}
             </div>
           </div>
@@ -73,53 +73,53 @@ export const GeminiInsight: React.FC<{ telemetry: ZoneTelemetry[] }> = ({ teleme
         <button
           onClick={handleAnalyze}
           disabled={status === 'loading'}
-          className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
+          className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
             status === 'loading'
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-primary text-white shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95'
+              ? 'bg-white/5 text-text-muted cursor-not-allowed border border-white/5'
+              : 'bg-primary text-background shadow-[0_0_20px_rgba(0,240,255,0.3)] hover:shadow-[0_0_30px_rgba(0,240,255,0.5)] hover:-translate-y-1 active:scale-95'
           }`}
         >
           {status === 'loading' ? (
-            <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Processing…</>
+            <><RefreshCw className="w-4 h-4 animate-spin" /> Processing…</>
           ) : (
-            <><Sparkles className="w-3.5 h-3.5" /> {requestCount > 0 ? 'Re-Analyze' : 'Request Insight'}</>
+            <><Sparkles className="w-4 h-4" /> {requestCount > 0 ? 'Re-Analyze' : 'Request Insight'}</>
           )}
         </button>
       </div>
 
       {/* Content Area */}
-      <div className="relative z-10 min-h-[80px]">
+      <div className="relative z-10 min-h-[100px]">
         {status === 'idle' && (
-          <div className="flex items-center gap-3 text-gray-400">
-            <div className="w-2 h-2 rounded-full bg-gray-300 animate-pulse" />
-            <p className="text-sm font-medium italic">
-              Click <span className="font-black text-primary not-italic">Request Insight</span> to get a real-time tactical analysis based on live venue telemetry.
+          <div className="flex items-center gap-4 text-text-muted">
+            <div className="w-2.5 h-2.5 rounded-full bg-primary/40 animate-pulse" />
+            <p className="text-base font-light italic">
+              Click <span className="font-bold text-primary not-italic">Request Insight</span> to get a real-time tactical analysis based on live venue telemetry.
             </p>
           </div>
         )}
 
         {status === 'loading' && (
-          <div className="space-y-3">
-            <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/20 to-primary/10 rounded-full animate-pulse w-full" />
-            <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/20 to-primary/10 rounded-full animate-pulse w-4/5" />
-            <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/20 to-primary/10 rounded-full animate-pulse w-3/5" />
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest pt-2">
+          <div className="space-y-4">
+            <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/30 to-primary/10 rounded-full animate-pulse w-full" />
+            <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/30 to-primary/10 rounded-full animate-pulse w-5/6" />
+            <div className="h-4 bg-gradient-to-r from-primary/10 via-primary/30 to-primary/10 rounded-full animate-pulse w-4/6" />
+            <p className="text-[10px] text-text-muted font-black uppercase tracking-[0.3em] pt-4">
               Gemini is analyzing {telemetry.length} sector telemetry nodes…
             </p>
           </div>
         )}
 
         {status === 'done' && insight && (
-          <div className="space-y-4">
-            <div className={`p-4 rounded-2xl border ${hasCritical ? 'bg-red-50 border-red-100' : hasWarning ? 'bg-amber-50 border-amber-100' : 'bg-emerald-50 border-emerald-100'}`}>
-              <p className="text-sm font-medium text-gray-800 leading-relaxed">
+          <div className="space-y-6">
+            <div className={`p-6 rounded-2xl border ${hasCritical ? 'bg-red-500/10 border-red-500/20 text-red-100' : hasWarning ? 'bg-amber-500/10 border-amber-500/20 text-amber-100' : 'bg-primary/5 border-primary/20 text-blue-50'}`}>
+              <p className="text-lg font-light leading-relaxed">
                 "{insight}"
               </p>
             </div>
-            <div className="flex items-center justify-between text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-              <span className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                Gemini AI Core · Analysis #{requestCount}
+            <div className="flex items-center justify-between text-[10px] text-text-muted font-black uppercase tracking-[0.3em] pt-2">
+              <span className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(0,240,255,0.5)]" />
+                Gemini AI Core · Tactical Analysis #{requestCount}
               </span>
               <span>{new Date().toLocaleTimeString()}</span>
             </div>
@@ -127,8 +127,8 @@ export const GeminiInsight: React.FC<{ telemetry: ZoneTelemetry[] }> = ({ teleme
         )}
 
         {status === 'error' && (
-          <div className="p-4 bg-red-50 border border-red-100 rounded-2xl">
-            <p className="text-sm text-red-600 font-medium">{insight}</p>
+          <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl">
+            <p className="text-sm text-red-400 font-bold">{insight}</p>
           </div>
         )}
       </div>
